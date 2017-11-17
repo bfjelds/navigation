@@ -35,8 +35,7 @@
 * Author: Eitan Marder-Eppstein
 *********************************************************************/
 #include <voxel_grid/voxel_grid.h>
-#include <sys/time.h>
-#include <ros/console.h>
+#include <rcl/time.h>
 
 namespace voxel_grid {
   VoxelGrid::VoxelGrid(unsigned int size_x, unsigned int size_y, unsigned int size_z)

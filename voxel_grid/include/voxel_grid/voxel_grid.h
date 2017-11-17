@@ -44,8 +44,10 @@
 #include <math.h>
 #include <limits.h>
 #include <algorithm>
-#include <ros/console.h>
-#include <ros/assert.h>
+
+#define ROS_INFO(...)
+#define ROS_DEBUG(...)
+#define ROS_ASSERT(...)
 
 /**
  * @class VoxelGrid

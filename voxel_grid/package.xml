@@ -15,9 +15,12 @@
     <license>BSD</license>
     <url>http://wiki.ros.org/voxel_grid</url>
 
-    <buildtool_depend version_gte="0.5.68">catkin</buildtool_depend>
+    <buildtool_depend>ament_cmake</buildtool_depend>
 
-    <depend>roscpp</depend>
+    <depend>rcl</depend>
+    
+    <export>
+        <build_type>ament_cmake</build_type>
+    </export>
 
-    <test_depend>rosunit</test_depend>
-</package>
+    </package>
