@@ -40,17 +40,15 @@
 #include <stdio.h>
 
 // We use SDL_image to load the image from disk
-#include <SDL/SDL_image.h>
+#include <SDL_image.h>
 
 #include "map_server/image_loader.h"
 #include <tf2/LinearMath/Quaternion.h>
-
 // compute linear index for given map coords
 #define MAP_IDX(sx, i, j) ((sx) * (j) + (i))
 
 namespace map_server
 {
-
 void
 loadMapFromFile(nav_msgs::srv::GetMap::Response* resp,
                 const char* fname, double res, bool negate,

@@ -34,6 +34,7 @@
  */
 
 #include "nav_msgs/srv/get_map.hpp"
+#include "map_server_image_loader_EXPORT.h"
 
 /** Map mode
  *  Default: TRINARY -
@@ -68,6 +69,7 @@ namespace map_server
  * @param mode Map mode
  * @throws std::runtime_error If the image file can't be loaded
  * */
+map_server_image_loader_DLLAPI
 void loadMapFromFile(nav_msgs::srv::GetMap::Response* resp,
                      const char* fname, double res, bool negate,
                      double occ_th, double free_th, double* origin,

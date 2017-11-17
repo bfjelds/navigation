@@ -37,7 +37,11 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#ifdef __MINGW32__
 #include <libgen.h>
+#else
+#include <filesystem>
+#endif // __MINGW32__
 #include <fstream>
 #include <functional>
 #include <memory>
@@ -151,9 +155,16 @@ class MapServer
           if(mapfname[0] != '/')
           {
             // dirname can modify what you pass it
+#ifdef __MINGW32__
             char* fname_copy = strdup(fname.c_str());
             mapfname = std::string(dirname(fname_copy)) + '/' + mapfname;
             free(fname_copy);
+#else
+            auto fname_path = std::experimental::filesystem::path(fname);
+            auto parent_path = fname_path.parent_path();
+            auto parent_str = parent_path.string();
+            mapfname = std::string(parent_str) + '/' + mapfname;
+#endif // __MINGW32__
           }
         } catch (YAML::InvalidScalar &) {
           RCUTILS_LOG_ERROR("The map does not contain an image tag or it is invalid.")

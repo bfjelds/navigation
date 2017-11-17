@@ -1,6 +1,7 @@
 cmake_minimum_required(VERSION 3.5)
 
 project(map_server)
+include (GenerateExportHeader)
 
 # Default to C++14
 if(NOT CMAKE_CXX_STANDARD)
@@ -20,15 +21,28 @@ find_package(tf2 REQUIRED)
 find_package(SDL REQUIRED)
 find_package(SDL_image REQUIRED)
 
-find_package(PkgConfig REQUIRED)
-pkg_check_modules(YAMLCPP yaml-cpp REQUIRED)
-if(YAMLCPP_VERSION VERSION_GREATER "0.5.0")
-  add_definitions(-DHAVE_YAMLCPP_GT_0_5_0)
-endif()
+find_library(YAMLCPP_LIBRARIES NAMES libyaml-cppmd)
+if (NOT YAMLCPP_LIBRARIES) 
+     message(STATUS "yaml-cpp library has not been found") 
+endif() 
+if (YAMLCPP_LIBRARIES) 
+     message(STATUS "Found yaml-cpp: (${YAMLCPP_LIBRARIES})") 
+endif() 
+add_definitions(-DHAVE_YAMLCPP_GT_0_5_0)
 
-include_directories(include)
+include_directories(
+  include
+  ${PROJECT_BINARY_DIR}
+  ${nav_msgs_INCLUDE_DIRS}
+  ${rclcpp_INCLUDE_DIRS}
+  ${tf2_INCLUDE_DIRS}
+  ${SDL_INCLUDE_DIRS}
+  ${SDL_image_INCLUDE_DIRS}
+)
 
 add_library(map_server_image_loader SHARED src/image_loader.cpp)
+generate_export_header(map_server_image_loader
+    EXPORT_MACRO_NAME map_server_image_loader_DLLAPI)
 ament_target_dependencies(map_server_image_loader
   "nav_msgs"
   "tf2"
@@ -50,7 +64,8 @@ ament_target_dependencies(map_server
 target_include_directories(map_server_image_loader
   PUBLIC ${YAMLCPP_INCLUDE_DIRS}
 )
-target_link_libraries(map_server
+
+target_link_libraries(map_server 
   map_server_image_loader
   ${YAMLCPP_LIBRARIES}
 )
@@ -111,6 +126,9 @@ install(
   LIBRARY DESTINATION lib
   RUNTIME DESTINATION bin
 )
+
+install(FILES ${PROJECT_BINARY_DIR}/map_server_image_loader_export.h
+  DESTINATION include)
 
 # Install executables
 install(
