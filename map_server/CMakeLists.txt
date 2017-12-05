@@ -21,7 +21,13 @@ find_package(tf2 REQUIRED)
 find_package(SDL REQUIRED)
 find_package(SDL_image REQUIRED)
 
-find_library(YAMLCPP_LIBRARIES NAMES libyaml-cppmd)
+
+if(CMAKE_BUILD_TYPE MATCHES "Debug")
+  find_library(YAMLCPP_LIBRARIES NAMES libyaml-cppmdd)
+else()
+  find_library(YAMLCPP_LIBRARIES NAMES libyaml-cppmd)
+endif()
+
 if (NOT YAMLCPP_LIBRARIES) 
      message(STATUS "yaml-cpp library has not been found") 
 endif() 
