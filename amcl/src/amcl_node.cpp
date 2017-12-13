@@ -250,9 +250,9 @@ class AmclNode
     std::shared_ptr<rclcpp::Node> node;
     rclcpp::Publisher<geometry_msgs::msg::PoseWithCovarianceStamped>::SharedPtr pose_pub_;
     rclcpp::Publisher<geometry_msgs::msg::PoseArray>::SharedPtr particlecloud_pub_;
-    rclcpp::service::ServiceBase::SharedPtr global_loc_srv_;
-    rclcpp::service::ServiceBase::SharedPtr nomotion_update_srv_; //to let amcl update samples without requiring motion
-    rclcpp::service::ServiceBase::SharedPtr set_map_srv_;
+    rclcpp::ServiceBase::SharedPtr global_loc_srv_;
+    rclcpp::ServiceBase::SharedPtr nomotion_update_srv_; //to let amcl update samples without requiring motion
+    rclcpp::ServiceBase::SharedPtr set_map_srv_;
     rclcpp::Subscription<geometry_msgs::msg::PoseWithCovarianceStamped>::SharedPtr initial_pose_sub_old_;
     rclcpp::Subscription<nav_msgs::msg::OccupancyGrid>::SharedPtr map_sub_;
 
@@ -325,8 +325,8 @@ main(int argc, char** argv)
   rclcpp::init(argc, argv);
   rcutils_logging_initialize();
 
-  auto node = rclcpp::node::Node::make_shared("amcl");
-  auto parameter_service = std::make_shared<rclcpp::parameter_service::ParameterService>(node);
+  auto node = rclcpp::Node::make_shared("amcl");
+  auto parameter_service = std::make_shared<rclcpp::ParameterService>(node);
 
   if (rcutils_cli_option_exist(argv, argv + argc, "-h")) {
     print_usage();
@@ -784,14 +784,14 @@ void AmclNode::savePoseToServer()
 
   auto set_parameters_results = node->set_parameters_atomically(
       {
-       rclcpp::parameter::ParameterVariant("initial_pose_x", map_pose.getOrigin().x()),
-       rclcpp::parameter::ParameterVariant("initial_pose_y", map_pose.getOrigin().y()),
-       rclcpp::parameter::ParameterVariant("initial_pose_a", yaw),
-       rclcpp::parameter::ParameterVariant("initial_cov_xx",
+       rclcpp::ParameterVariant("initial_pose_x", map_pose.getOrigin().x()),
+       rclcpp::ParameterVariant("initial_pose_y", map_pose.getOrigin().y()),
+       rclcpp::ParameterVariant("initial_pose_a", yaw),
+       rclcpp::ParameterVariant("initial_cov_xx",
                                   last_published_pose.pose.covariance[6*0+0]),
-       rclcpp::parameter::ParameterVariant("initial_cov_yy",
+       rclcpp::ParameterVariant("initial_cov_yy",
                                   last_published_pose.pose.covariance[6*1+1]),
-       rclcpp::parameter::ParameterVariant("initial_cov_yy",
+       rclcpp::ParameterVariant("initial_cov_yy",
                                   last_published_pose.pose.covariance[6*5+5]),
       }
     );
@@ -873,7 +873,7 @@ AmclNode::requestMap()
     ROS_INFO("Waiting for map service to appear...");
   }
 
-  rclcpp::rate::Rate r(std::chrono::milliseconds(500));
+  rclcpp::Rate r(std::chrono::milliseconds(500));
   while(!map_received)
   {
     auto result_future = client->async_send_request(req);
